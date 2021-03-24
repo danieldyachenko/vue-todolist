@@ -1,8 +1,8 @@
 import { defineComponent } from "vue";
 import { v4 as uuid } from "uuid";
 import Item from "@/components/app/item/item.vue";
-import { Items } from "@/types";
 import storage from "@/utils/storage";
+import { IItem, Items } from "@/types";
 
 export default defineComponent({
   name: "app",
@@ -11,9 +11,10 @@ export default defineComponent({
     return {
       value: "",
       items: [] as Items,
+      editModeId: null as string | null,
     };
   },
-  created() {
+  created(): void {
     this.$data.items = storage.getData();
   },
   watch: {
@@ -25,7 +26,7 @@ export default defineComponent({
     },
   },
   methods: {
-    add() {
+    add(): void {
       if (this.value.length) {
         this.items.push({
           id: uuid(),
@@ -34,9 +35,17 @@ export default defineComponent({
         this.value = "";
       }
     },
-    remove(id: string) {
+    remove(id: string): void {
       const index = this.items.findIndex((item) => id === item.id);
       this.items.splice(index, 1);
+    },
+    setEditModeId(id: string): void {
+      this.editModeId = id;
+    },
+    save({ id, text }: IItem): void {
+      const index = this.items.findIndex((item) => id === item.id);
+      this.items[index].text = text;
+      this.editModeId = null;
     },
   },
 });

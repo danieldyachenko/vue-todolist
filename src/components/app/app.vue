@@ -10,9 +10,15 @@
     </label>
     <button @click="add">Add</button>
     <ul v-if="items.length">
-      <item v-for="item in items" :key="item.id" :id="item.id" @remove="remove">
-        {{ item.text }}
-      </item>
+      <item
+        v-for="item in items"
+        :key="item.id"
+        :item="item"
+        :editModeId="editModeId"
+        @setEditModeId="setEditModeId"
+        @remove="remove"
+        @save="save"
+      />
     </ul>
     <div v-else>The list is empty</div>
   </main>
